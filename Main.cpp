@@ -1,4 +1,5 @@
-#include <iostream>
+//21900084 Rabiu Amir Rabiu 351 Project
+#include<iostream>	
 #include <cstring>
 #include <fstream>
 #include <cstdlib>
@@ -12,30 +13,30 @@ void sm(struct node* header);
 void prem(struct node* header);
 void nonPrem(struct node* header);
 void sr(struct node* header);
-void gd();
+void amir();
 
 struct node {
-	int pn;
-	int bt;
-	int at;
-	int py;
+	int an;
+	int burst;
+	int arriv;
+	int prior;
 	struct node *next;
 };
 
 int is_empty_node(struct node * header);
-struct node * sort_list(struct node * header);
-struct node * insert_back(struct node * header, int pn, int btm, int atm, int pyn);
-struct node * check_completion(struct node * header, int count);
-struct node * sort_priority(struct node * header);
-struct node * create_node(int pn, int btm, int atm, int pyn);
-struct node * delete_front(struct node * header);
+struct node * sortList(struct node * header);
+struct node * insertBack(struct node * header, int an, int b, int a, int p);
+struct node * checkCompletion(struct node * header, int count);
+struct node * sortPriority(struct node * header);
+struct node * createNode(int an, int b, int a, int p);
+struct node * deleteFront(struct node * header);
 int main()
 {
 	struct node *header = NULL;
-	int pn;
-	int btm;
-	int atm;
-	int pyn;
+	int an;
+	int b;
+	int a;
+	int p;
 	ifstream fin;
 	bool loop = true;
 	fin.open("input.txt");
@@ -43,8 +44,8 @@ int main()
 
 	if (fin.is_open()) {
 
-		while (fin >> pn >> btm >> atm >> pyn) {
-			header = insert_back(header, pn, btm, atm, pyn);
+		while (fin >> an >> b >> a >> p) {
+			header = insertBack(header, an, b, a, p);
 		}
 	}
 	fin.close();
@@ -161,9 +162,9 @@ void firstCome(struct node* header) {
 	while (!(is_empty_node(temp))) {
 		fin << "P" << pr << ": " << waittime << endl;
 		average += waittime;
-		waittime += (int)temp->bt - '0';
+		waittime += (int)temp->burst - '0';
 
-		temp = delete_front(temp);
+		temp = deleteFront(temp);
 
 		pr++;
 	}
@@ -176,7 +177,7 @@ void shj(struct node* header) {
 	int wtm = 0, counter = 0;
 	int pr = 1;
 	float average = 0;
-	temp = sort_list(temp);
+	temp = sortList(temp);
 
 	ofstream fin("output.txt");
 
@@ -184,19 +185,19 @@ void shj(struct node* header) {
 	fin << "Process Waiting Times: " << endl;
 
 	while (!(is_empty_node(temp))) {
-		temp = check_completion(temp, counter);
+		temp = checkCompletion(temp, counter);
 
-		if (counter < (int)temp->at - '0') {
+		if (counter < (int)temp->arriv - '0') {
 			counter++;
 			continue;
 		}
-		fin << "P" << temp->pn << ": " << wtm << endl;
+		fin << "P" << temp->an << ": " << wtm << endl;
 		average += wtm;
-		wtm += (int)temp->bt - '0';
+		wtm += (int)temp->burst - '0';
 
-		counter += (int)temp->bt - '0';
+		counter += (int)temp->burst - '0';
 
-		temp = delete_front(temp);
+		temp = deleteFront(temp);
 
 
 		pr++;
@@ -216,7 +217,7 @@ void pnp(struct node* header) {
 	int wtm = 0, counter = 0;
 	int pr = 1;
 	float average = 0;
-	temp = sort_priority(temp);
+	temp = sortPriority(temp);
 	ofstream fin("output.txt");
 
 	fin << "Scheuling Method: Priority Scheduling(Non-Preemptive)" << endl;
@@ -225,19 +226,19 @@ void pnp(struct node* header) {
 	while (!(is_empty_node(temp))) {
 
 
-		if (counter < (int)temp->at - '0') {
+		if (counter < (int)temp->arriv - '0') {
 			counter++;
 			continue;
 		}
 
 
-		fin << "P" << temp->pn << ": " << wtm << endl;
+		fin << "P" << temp->an << ": " << wtm << endl;
 		average += wtm;
-		wtm += (int)temp->bt - '0';
+		wtm += (int)temp->burst - '0';
 
-		counter += (int)temp->bt - '0';
+		counter += (int)temp->burst - '0';
 
-		temp = delete_front(temp);
+		temp = deleteFront(temp);
 
 
 		pr++;
@@ -257,25 +258,25 @@ int is_empty_node(struct node* header) {
 		return 0;
 	}
 }
-struct node* sort_list(struct node* header) {
+struct node* sortList(struct node* header) {
 	struct node* temp = header;
 	struct node* i = temp;
 	struct node* j = temp->next;
 
 	for (i = temp; i != NULL; i = i->next) {
 		for (j = i->next; j != NULL; j = j->next) {
-			if ((int)(i->at) - '0' > (int)(j->at) - '0') {
-				struct node* tempp = create_node(i->pn, i->bt, i->at, i->py);
+			if ((int)(i->arriv) - '0' > (int)(j->arriv) - '0') {
+				struct node* tempp = createNode(i->an, i->burst, i->arriv, i->prior);
 
-				i->pn = j->pn;
-				i->bt = j->bt;
-				i->at = j->at;
-				i->py = j->py;
+				i->an = j->an;
+				i->burst = j->burst;
+				i->arriv = j->arriv;
+				i->prior = j->prior;
 
-				j->pn = tempp->pn;
-				j->bt = tempp->bt;
-				j->at = tempp->at;
-				j->py = tempp->py;
+				j->an = tempp->an;
+				j->burst = tempp->burst;
+				j->arriv = tempp->arriv;
+				j->prior= tempp->prior;
 			}
 
 		}
@@ -284,8 +285,8 @@ struct node* sort_list(struct node* header) {
 
 	return temp;
 }
-struct node* insert_back(struct node* header, int pn, int btm, int atm, int pyn) {
-	struct node* temp = create_node(pn, btm, atm, pyn);
+struct node* insertBack(struct node* header, int an, int b, int a, int p) {
+	struct node* temp = createNode(an, b, a, p);
 	struct node* headerTemp;
 	if (header == NULL) {
 		header = temp;
@@ -298,7 +299,7 @@ struct node* insert_back(struct node* header, int pn, int btm, int atm, int pyn)
 	return header;
 }
 
-struct node* delete_front(struct node* header) {
+struct node* deleteFront(struct node* header) {
 	struct node* temp;
 	if (header == NULL)
 		return header;
@@ -311,7 +312,7 @@ struct node* delete_front(struct node* header) {
 }
 
 
-struct node* check_completion(struct node* header, int counter) {
+struct node* checkCompletion(struct node* header, int counter) {
 	struct node* temp = header;
 	struct node* i = temp;
 	struct node* j = i->next;
@@ -320,19 +321,19 @@ struct node* check_completion(struct node* header, int counter) {
 
 		for (j = i->next; j != NULL; j = j->next) {
 
-			if ((((int)(i->bt) - '0') > ((int)(j->bt) - '0')) &&
-				(((int)(j->at) - '0') <= counter)) {
-				struct node* tempp = create_node(i->pn, i->bt, i->at, i->py);
+			if ((((int)(i->burst) - '0') > ((int)(j->burst) - '0')) &&
+				(((int)(j->arriv) - '0') <= counter)) {
+				struct node* tempp = createNode(i->an, i->burst, i->arriv, i->prior);
 
-				i->pn = j->pn;
-				i->bt = j->bt;
-				i->at = j->at;
-				i->py = j->py;
+				i->an = j->an;
+				i->burst = j->burst;
+				i->arriv = j->arriv;
+				i->prior = j->prior;
 
-				j->pn = tempp->pn;
-				j->bt = tempp->bt;
-				j->at = tempp->at;
-				j->py = tempp->py;
+				j->an = tempp->an;
+				j->burst = tempp->burst;
+				j->arriv = tempp->arriv;
+				j->prior = tempp->prior;
 			}
 		}
 	}
@@ -340,23 +341,23 @@ struct node* check_completion(struct node* header, int counter) {
 	return temp;
 }
 
-struct node* sort_priority(struct node* header) {
+struct node* sortPriority(struct node* header) {
 	struct node* temp = header;
 	struct node* i = temp;
 	struct node* j = temp->next;
 	for (i = temp; i != NULL; i = i->next) {
 		for (j = i->next; j != NULL; j = j->next) {
-			if ((int)(i->py) - '0' > (int)(j->py) - '0') {
-				struct node* tempp = create_node(i->pn, i->bt, i->at, i->py);
-				i->pn = j->pn;
-				i->bt = j->bt;
-				i->at = j->at;
-				i->py = j->py;
+			if ((int)(i->prior) - '0' > (int)(j->prior) - '0') {
+				struct node* tempp = createNode(i->an, i->burst, i->arriv, i->prior);
+				i->an = j->an;
+				i->burst = j->burst;
+				i->arriv = j->arriv;
+				i->prior = j->prior;
 
-				j->pn = tempp->pn;
-				j->bt = tempp->bt;
-				j->at = tempp->at;
-				j->py = tempp->py;
+				j->an = tempp->an;
+				j->burst = tempp->burst;
+				j->arriv = tempp->arriv;
+				j->prior = tempp->prior;
 
 			}
 		}
@@ -367,13 +368,13 @@ struct node* sort_priority(struct node* header) {
 
 
 
-struct node* create_node(int pn, int btm, int atm, int pyn) {
+struct node* createNode(int an, int b, int a, int p) {
 	struct node *header = NULL;
 	header = (struct node *) malloc(sizeof(node));
-	header->pn = pn;
-	header->bt = btm;
-	header->at = atm;
-	header->py = pyn;
+	header->an = an;
+	header->burst = b;
+	header->arriv = a;
+	header->prior = p;
 	header->next = NULL;
 
 	return header;
@@ -390,14 +391,12 @@ void sr(struct node* header) {
 
 }
 
-void gd() {
+void amir() {
 
 }
 void pp(struct node* header) {
 
 }
-
-
 
  
 
